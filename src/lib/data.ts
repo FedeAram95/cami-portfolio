@@ -67,7 +67,7 @@ export const categories = [
   { id: 'ux-ui', name: 'UX / UI', nameEn: 'UX / UI', number: '02' },
   { id: 'paid-media', name: 'Paid Media', nameEn: 'Paid Media', number: '03' },
   { id: 'social-media', name: 'Social Media', nameEn: 'Social Media', number: '04' },
-  { id: 'editorial', name: 'Editorial', nameEn: 'Editorial', number: '05' },
+  { id: 'email-marketing', name: 'Email Marketing', nameEn: 'Email Marketing', number: '05' },
 ];
 
 export const projects: Project[] = [

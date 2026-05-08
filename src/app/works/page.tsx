@@ -35,56 +35,101 @@ export default function WorksPage() {
             </div>
           </div>
 
-          {/* Categories - Folder Tab Style */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 mb-20 relative">
-            {categories.map((cat, index) => {
-              const isLeft = index % 2 === 0;
-              const isAccent = index % 3 === 0 || index % 3 === 2;
-              const count = projects.filter((p) => p.category === cat.id).length;
-              const isActive = activeCategory === cat.id;
+          {/* Categories - File Folder Style */}
+          <div className="flex gap-4 mb-20">
+            {/* Left column */}
+            <div className="flex-1 flex flex-col">
+              {categories
+                .filter((_, i) => i % 2 === 0)
+                .map((cat, stackIndex) => {
+                  const isActive = activeCategory === cat.id;
+                  const isAccent = stackIndex % 2 === 0;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+                      className="relative text-left cursor-pointer group focus:outline-none"
+                      style={{
+                        marginTop: stackIndex > 0 ? '-24px' : '0',
+                        zIndex: stackIndex + 1,
+                      }}
+                    >
+                      <div
+                        className={`h-40 lg:h-48 relative transition-all duration-300 ${
+                          isActive
+                            ? 'bg-[var(--accent)] shadow-lg'
+                            : isAccent
+                            ? 'bg-[var(--accent)]/15 group-hover:bg-[var(--accent)]/25'
+                            : 'bg-gray-200 group-hover:bg-gray-300'
+                        }`}
+                        style={{
+                          clipPath: 'polygon(0 0, 30% 0, 30% 15%, 100% 15%, 100% 100%, 0 100%)',
+                        }}
+                      >
+                        <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-8 pb-6 lg:pb-7">
+                          <span className={`font-mono text-xs block mb-1 ${
+                            isActive ? 'text-white/70' : 'text-[var(--accent)]'
+                          }`}>
+                            {cat.number}
+                          </span>
+                          <span className={`text-2xl lg:text-4xl font-serif block ${
+                            isActive ? 'text-white' : ''
+                          }`}>
+                            {locale === 'es' ? cat.name : cat.nameEn}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+            </div>
 
-              return (
-                <button
-                  key={cat.id}
-                  onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
-                  className={`
-                    relative group text-left transition-all duration-300 cursor-pointer
-                    ${isLeft ? 'md:pr-4' : 'md:pl-4'}
-                    ${index > 1 ? '-mt-2 md:-mt-3' : ''}
-                  `}
-                  style={{
-                    transform: isLeft ? `translateX(${index * 2}px)` : `translateX(-${index * 2}px)`,
-                  }}
-                >
-                  <div
-                    className={`
-                      relative p-6 lg:p-8 transition-all duration-300
-                      ${isActive
-                        ? 'bg-[var(--accent)] text-white shadow-lg'
-                        : isAccent
-                          ? 'bg-[var(--accent)]/15 hover:bg-[var(--accent)]/25'
-                          : 'bg-gray-200 hover:bg-gray-300'
-                      }
-                    `}
-                    style={{
-                      clipPath: isLeft
-                        ? 'polygon(0 0, 95% 0, 100% 100%, 0 100%)'
-                        : 'polygon(5% 0, 100% 0, 100% 100%, 0 100%)',
-                    }}
-                  >
-                    <span className={`
-                      font-mono text-xs block mb-2
-                      ${isActive ? 'text-white/70' : 'text-[var(--accent)]'}
-                    `}>
-                      {cat.number}
-                    </span>
-                    <span className="text-3xl lg:text-5xl font-serif block">
-                      {locale === 'es' ? cat.name : cat.nameEn}
-                    </span>
-                  </div>
-                </button>
-              );
-            })}
+            {/* Right column */}
+            <div className="flex-1 flex flex-col">
+              {categories
+                .filter((_, i) => i % 2 !== 0)
+                .map((cat, stackIndex) => {
+                  const isActive = activeCategory === cat.id;
+                  const isAccent = stackIndex % 2 !== 0;
+                  return (
+                    <button
+                      key={cat.id}
+                      onClick={() => setActiveCategory(activeCategory === cat.id ? null : cat.id)}
+                      className="relative text-left cursor-pointer group focus:outline-none"
+                      style={{
+                        marginTop: stackIndex > 0 ? '-24px' : '0',
+                        zIndex: stackIndex + 1,
+                      }}
+                    >
+                      <div
+                        className={`h-40 lg:h-48 relative transition-all duration-300 ${
+                          isActive
+                            ? 'bg-[var(--accent)] shadow-lg'
+                            : isAccent
+                            ? 'bg-[var(--accent)]/15 group-hover:bg-[var(--accent)]/25'
+                            : 'bg-gray-200 group-hover:bg-gray-300'
+                        }`}
+                        style={{
+                          clipPath: 'polygon(0 15%, 70% 15%, 70% 0, 100% 0, 100% 100%, 0 100%)',
+                        }}
+                      >
+                        <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-8 pb-6 lg:pb-7">
+                          <span className={`font-mono text-xs block mb-1 ${
+                            isActive ? 'text-white/70' : 'text-[var(--accent)]'
+                          }`}>
+                            {cat.number}
+                          </span>
+                          <span className={`text-2xl lg:text-4xl font-serif block ${
+                            isActive ? 'text-white' : ''
+                          }`}>
+                            {locale === 'es' ? cat.name : cat.nameEn}
+                          </span>
+                        </div>
+                      </div>
+                    </button>
+                  );
+                })}
+            </div>
           </div>
 
           {/* Projects Grid */}

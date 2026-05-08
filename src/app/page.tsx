@@ -112,49 +112,87 @@ export default function Home() {
             </Link>
           </div>
 
-          {/* Categories - Folder Tab Style */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-x-4 mb-16 relative">
-            {categories.map((cat, index) => {
-              const isLeft = index % 2 === 0;
-              const isAccent = index % 3 === 0 || index % 3 === 2;
+          {/* Categories - File Folder Style */}
+          <div className="flex gap-4 mb-16">
+            {/* Left column */}
+            <div className="flex-1 flex flex-col">
+              {categories
+                .filter((_, i) => i % 2 === 0)
+                .map((cat, stackIndex) => {
+                  const isAccent = stackIndex % 2 === 0;
+                  return (
+                    <Link
+                      key={cat.id}
+                      href={`/works?category=${cat.id}`}
+                      className="relative group focus:outline-none"
+                      style={{
+                        marginTop: stackIndex > 0 ? '-24px' : '0',
+                        zIndex: stackIndex + 1,
+                      }}
+                    >
+                      <div
+                        className={`h-36 lg:h-44 relative transition-all duration-300 ${
+                          isAccent
+                            ? 'bg-[var(--accent)]/15 group-hover:bg-[var(--accent)]/25'
+                            : 'bg-gray-200 group-hover:bg-gray-300'
+                        }`}
+                        style={{
+                          clipPath: 'polygon(0 0, 30% 0, 30% 15%, 100% 15%, 100% 100%, 0 100%)',
+                        }}
+                      >
+                        <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-8 pb-5 lg:pb-6">
+                          <span className="font-mono text-xs text-[var(--accent)] block mb-1">
+                            {cat.number}
+                          </span>
+                          <span className="text-xl lg:text-3xl font-serif block">
+                            {locale === 'es' ? cat.name : cat.nameEn}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+            </div>
 
-              return (
-                <Link
-                  key={cat.id}
-                  href={`/works?category=${cat.id}`}
-                  className={`
-                    relative group text-left transition-all duration-300
-                    ${isLeft ? 'md:pr-4' : 'md:pl-4'}
-                    ${index > 1 ? '-mt-2 md:-mt-3' : ''}
-                  `}
-                  style={{
-                    transform: isLeft ? `translateX(${index * 2}px)` : `translateX(-${index * 2}px)`,
-                  }}
-                >
-                  <div
-                    className={`
-                      relative p-6 lg:p-8 transition-all duration-300
-                      ${isAccent
-                        ? 'bg-[var(--accent)]/15 hover:bg-[var(--accent)]/25'
-                        : 'bg-gray-200 hover:bg-gray-300'
-                      }
-                    `}
-                    style={{
-                      clipPath: isLeft
-                        ? 'polygon(0 0, 95% 0, 100% 100%, 0 100%)'
-                        : 'polygon(5% 0, 100% 0, 100% 100%, 0 100%)',
-                    }}
-                  >
-                    <span className="font-mono text-xs text-[var(--accent)] block mb-2">
-                      {cat.number}
-                    </span>
-                    <span className="text-2xl lg:text-4xl font-serif block">
-                      {locale === 'es' ? cat.name : cat.nameEn}
-                    </span>
-                  </div>
-                </Link>
-              );
-            })}
+            {/* Right column */}
+            <div className="flex-1 flex flex-col">
+              {categories
+                .filter((_, i) => i % 2 !== 0)
+                .map((cat, stackIndex) => {
+                  const isAccent = stackIndex % 2 !== 0;
+                  return (
+                    <Link
+                      key={cat.id}
+                      href={`/works?category=${cat.id}`}
+                      className="relative group focus:outline-none"
+                      style={{
+                        marginTop: stackIndex > 0 ? '-24px' : '0',
+                        zIndex: stackIndex + 1,
+                      }}
+                    >
+                      <div
+                        className={`h-36 lg:h-44 relative transition-all duration-300 ${
+                          isAccent
+                            ? 'bg-[var(--accent)]/15 group-hover:bg-[var(--accent)]/25'
+                            : 'bg-gray-200 group-hover:bg-gray-300'
+                        }`}
+                        style={{
+                          clipPath: 'polygon(0 15%, 70% 15%, 70% 0, 100% 0, 100% 100%, 0 100%)',
+                        }}
+                      >
+                        <div className="absolute bottom-0 left-0 right-0 px-6 lg:px-8 pb-5 lg:pb-6">
+                          <span className="font-mono text-xs text-[var(--accent)] block mb-1">
+                            {cat.number}
+                          </span>
+                          <span className="text-xl lg:text-3xl font-serif block">
+                            {locale === 'es' ? cat.name : cat.nameEn}
+                          </span>
+                        </div>
+                      </div>
+                    </Link>
+                  );
+                })}
+            </div>
           </div>
 
           {/* Featured Projects Grid */}

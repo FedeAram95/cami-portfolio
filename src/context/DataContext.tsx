@@ -85,14 +85,14 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
   function subscribeToChanges() {
     const projectsSubscription = supabase
       .channel('projects-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, (payload) => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'projects' }, (payload: any) => {
         loadData();
       })
       .subscribe();
 
     const profileSubscription = supabase
       .channel('profile-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'profile' }, (payload) => {
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'profile' }, (payload: any) => {
         loadData();
       })
       .subscribe();

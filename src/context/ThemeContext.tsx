@@ -69,8 +69,8 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   function subscribeToThemeChanges() {
     const subscription = supabase
       .channel('theme-changes')
-      .on('postgres_changes', { event: '*', schema: 'public', table: 'theme_settings' }, (payload) => {
-        setTheme(payload.new || DEFAULT_THEME);
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'theme_settings' }, (payload: any) => {
+        setTheme((payload.new as ThemeSettings) || DEFAULT_THEME);
       })
       .subscribe();
 

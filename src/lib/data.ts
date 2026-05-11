@@ -4,12 +4,12 @@
 export interface Project {
   id: string;
   title: string;
-  titleEn: string;
+  titleen: string;
   category: string;
   image: string;
   description: string;
-  descriptionEn: string;
-  behanceUrl?: string;
+  descriptionen: string;
+  behanceurl?: string;
   year: string;
 }
 
@@ -38,7 +38,7 @@ export const profile = {
   email: 'camipiana24@gmail.com',
   location: 'Argentina',
   title: 'Diseñadora Gráfica & Estratega Visual',
-  titleEn: 'Graphic Designer & Visual Strategist',
+  titleen: 'Graphic Designer & Visual Strategist',
   yearsOfExperience: 7,
   bio: 'Soy Cami, diseñadora gráfica con más de 7 años de experiencia. Me especializo en branding, UX/UI, diseño para paid media y email marketing. Creo identidades visuales que no solo se ven bien, sino que generan resultados. Combino creatividad con estrategia para ayudar a marcas a conectar con su audiencia.',
   bioEn: "I'm Cami, a graphic designer with over 7 years of experience. I specialize in branding, UX/UI, paid media design, and email marketing. I create visual identities that not only look great but deliver results. I combine creativity with strategy to help brands connect with their audience.",
@@ -74,45 +74,45 @@ export const projects: Project[] = [
   {
     id: 'boreal',
     title: 'Boreal - Agencia Creativa',
-    titleEn: 'Boreal - Creative Agency',
+    titleen: 'Boreal - Creative Agency',
     category: 'branding',
     image: '/images/placeholder-project.jpg',
     description: 'Identidad visual y branding para agencia de diseño y publicidad.',
-    descriptionEn: 'Visual identity and branding for a design and advertising agency.',
-    behanceUrl: 'https://www.behance.net/camipiana',
+    descriptionen: 'Visual identity and branding for a design and advertising agency.',
+    behanceurl: 'https://www.behance.net/camipiana',
     year: '2024',
   },
   {
     id: 'volando-alto',
     title: 'Volando Alto',
-    titleEn: 'Volando Alto',
+    titleen: 'Volando Alto',
     category: 'branding',
     image: '/images/placeholder-project.jpg',
     description: 'Branding, redes sociales y piezas gráficas para evento de mujeres emprendedoras en la Patagonia.',
-    descriptionEn: 'Branding, social media, and graphic pieces for a women entrepreneurs event in Patagonia.',
-    behanceUrl: 'https://www.behance.net/camipiana',
+    descriptionen: 'Branding, social media, and graphic pieces for a women entrepreneurs event in Patagonia.',
+    behanceurl: 'https://www.behance.net/camipiana',
     year: '2024',
   },
   {
     id: 'boccone',
     title: 'Boccone Pizzeria',
-    titleEn: 'Boccone Pizzeria',
+    titleen: 'Boccone Pizzeria',
     category: 'branding',
     image: '/images/placeholder-project.jpg',
     description: 'Identidad visual completa para pizzería artesanal.',
-    descriptionEn: 'Complete visual identity for artisan pizzeria.',
-    behanceUrl: 'https://www.behance.net/camipiana',
+    descriptionen: 'Complete visual identity for artisan pizzeria.',
+    behanceurl: 'https://www.behance.net/camipiana',
     year: '2024',
   },
   {
     id: 'growth-path',
     title: 'Growth Path',
-    titleEn: 'Growth Path',
+    titleen: 'Growth Path',
     category: 'paid-media',
     image: '/images/placeholder-project.jpg',
     description: 'Branding y marca personal para especialista en paid media.',
-    descriptionEn: 'Branding and personal brand for a paid media specialist.',
-    behanceUrl: 'https://www.behance.net/camipiana',
+    descriptionen: 'Branding and personal brand for a paid media specialist.',
+    behanceurl: 'https://www.behance.net/camipiana',
     year: '2024',
   },
 ];

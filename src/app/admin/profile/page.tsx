@@ -102,8 +102,8 @@ export default function AdminProfilePage() {
                   </label>
                   <input
                     type="text"
-                    value={formData.titleEn || ''}
-                    onChange={(e) => setFormData({ ...formData, titleEn: e.target.value })}
+                    value={formData.titleen || ''}
+                    onChange={(e) => setFormData({ ...formData, titleen: e.target.value })}
                     className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"
                   />
                 </div>

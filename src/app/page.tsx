@@ -202,17 +202,17 @@ export default function Home() {
                 <div className="aspect-[4/3] bg-gray-200 mb-4 overflow-hidden">
                   <div className="w-full h-full bg-gradient-to-br from-gray-300 to-gray-100 flex items-center justify-center group-hover:scale-105 transition-transform duration-500">
                     <span className="font-mono text-sm text-gray-400 tracking-wider">
-                      {locale === 'es' ? project.title : project.titleEn}
+                      {locale === 'es' ? project.title : project.titleen}
                     </span>
                   </div>
                 </div>
                 <div className="flex justify-between items-start">
                   <div>
                     <h3 className="text-lg font-medium mb-1">
-                      {locale === 'es' ? project.title : project.titleEn}
+                      {locale === 'es' ? project.title : project.titleen}
                     </h3>
                     <p className="text-gray-500 text-sm font-mono">
-                      {locale === 'es' ? project.description : project.descriptionEn}
+                      {locale === 'es' ? project.description : project.descriptionen}
                     </p>
                   </div>
                   <span className="font-mono text-xs text-gray-400">{project.year}</span>

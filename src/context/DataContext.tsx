@@ -6,12 +6,12 @@ import { supabase } from '@/lib/supabase';
 export interface Project {
   id: string;
   title: string;
-  titleEn: string;
+  titleen: string;
   category: string;
   image: string;
   description: string;
-  descriptionEn: string;
-  behanceUrl?: string;
+  descriptionen: string;
+  behanceurl?: string;
   year: string;
   created_at: string;
   updated_at: string;

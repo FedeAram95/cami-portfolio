@@ -13,12 +13,12 @@ export default function AdminProjectsPage() {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState<Partial<Project>>({
     title: '',
-    titleEn: '',
+    titleen: '',
     category: categories[0].id,
     image: '',
     description: '',
-    descriptionEn: '',
-    behanceUrl: '',
+    descriptionen: '',
+    behanceurl: '',
     year: new Date().getFullYear().toString(),
   });
   const [error, setError] = useState('');
@@ -28,7 +28,7 @@ export default function AdminProjectsPage() {
     setError('');
 
     try {
-      if (!formData.title || !formData.titleEn || !formData.category) {
+      if (!formData.title || !formData.titleen || !formData.category) {
         setError('Completa todos los campos requeridos');
         return;
       }
@@ -43,12 +43,12 @@ export default function AdminProjectsPage() {
       setEditingId(null);
       setFormData({
         title: '',
-        titleEn: '',
+        titleen: '',
         category: categories[0].id,
         image: '',
         description: '',
-        descriptionEn: '',
-        behanceUrl: '',
+        descriptionen: '',
+        behanceurl: '',
         year: new Date().getFullYear().toString(),
       });
     } catch (err) {
@@ -99,12 +99,12 @@ export default function AdminProjectsPage() {
                   setEditingId(null);
                   setFormData({
                     title: '',
-                    titleEn: '',
+                    titleen: '',
                     category: categories[0].id,
                     image: '',
                     description: '',
-                    descriptionEn: '',
-                    behanceUrl: '',
+                    descriptionen: '',
+                    behanceurl: '',
                     year: new Date().getFullYear().toString(),
                   });
                 }}
@@ -232,9 +232,9 @@ export default function AdminProjectsPage() {
                         </label>
                         <input
                           type="text"
-                          value={formData.titleEn || ''}
+                          value={formData.titleen || ''}
                           onChange={(e) =>
-                            setFormData({ ...formData, titleEn: e.target.value })
+                            setFormData({ ...formData, titleen: e.target.value })
                           }
                           className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"
                           required
@@ -282,9 +282,9 @@ export default function AdminProjectsPage() {
                           Descripción (EN)
                         </label>
                         <textarea
-                          value={formData.descriptionEn || ''}
+                          value={formData.descriptionen || ''}
                           onChange={(e) =>
-                            setFormData({ ...formData, descriptionEn: e.target.value })
+                            setFormData({ ...formData, descriptionen: e.target.value })
                           }
                           className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)] h-20"
                         />
@@ -313,9 +313,9 @@ export default function AdminProjectsPage() {
                         </label>
                         <input
                           type="url"
-                          value={formData.behanceUrl || ''}
+                          value={formData.behanceurl || ''}
                           onChange={(e) =>
-                            setFormData({ ...formData, behanceUrl: e.target.value })
+                            setFormData({ ...formData, behanceurl: e.target.value })
                           }
                           placeholder="https://behance.net/..."
                           className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"

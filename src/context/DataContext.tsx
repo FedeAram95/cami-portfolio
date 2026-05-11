@@ -25,7 +25,7 @@ export interface Profile {
   email: string;
   photoUrl?: string;
   title: string;
-  titleEn: string;
+  titleen: string;
   yearsOfExperience: number;
 }
 

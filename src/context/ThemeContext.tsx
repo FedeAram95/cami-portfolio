@@ -61,17 +61,19 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setTheme(data[0]);
       } else {
         // Create default theme if it doesn't exist
-        const { data: newTheme } = await supabase
+        const { data: newTheme, error: insertError } = await supabase
           .from('theme_settings')
           .insert([DEFAULT_THEME_DATA])
           .select()
           .single();
 
-        setTheme(newTheme || { ...DEFAULT_THEME_DATA, id: '' });
+        if (insertError) throw insertError;
+        if (newTheme) {
+          setTheme(newTheme);
+        }
       }
     } catch (err) {
       console.error('Error loading theme:', err);
-      setTheme({ ...DEFAULT_THEME_DATA, id: '' });
     } finally {
       setLoading(false);
     }

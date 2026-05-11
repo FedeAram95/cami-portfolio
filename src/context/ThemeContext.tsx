@@ -22,8 +22,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const DEFAULT_THEME: ThemeSettings = {
-  id: 'default',
+const DEFAULT_THEME_DATA = {
   primaryColor: '#d946a8',
   secondaryColor: '#a21caf',
   backgroundColor: '#ffffff',
@@ -64,15 +63,15 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         // Create default theme if it doesn't exist
         const { data: newTheme } = await supabase
           .from('theme_settings')
-          .insert([DEFAULT_THEME])
+          .insert([DEFAULT_THEME_DATA])
           .select()
           .single();
 
-        setTheme(newTheme || DEFAULT_THEME);
+        setTheme(newTheme || { ...DEFAULT_THEME_DATA, id: '' });
       }
     } catch (err) {
       console.error('Error loading theme:', err);
-      setTheme(DEFAULT_THEME);
+      setTheme({ ...DEFAULT_THEME_DATA, id: '' });
     } finally {
       setLoading(false);
     }
@@ -82,7 +81,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     const subscription = supabase
       .channel('theme-changes')
       .on('postgres_changes', { event: '*', schema: 'public', table: 'theme_settings' }, (payload: any) => {
-        setTheme((payload.new as ThemeSettings) || DEFAULT_THEME);
+        setTheme((payload.new as ThemeSettings) || null);
       })
       .subscribe();
 

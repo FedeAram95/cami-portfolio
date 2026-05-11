@@ -54,10 +54,22 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
       const { data, error } = await supabase
         .from('theme_settings')
         .select('*')
-        .single();
+        .limit(1);
 
-      if (error && error.code !== 'PGRST116') throw error;
-      setTheme(data || DEFAULT_THEME);
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        setTheme(data[0]);
+      } else {
+        // Create default theme if it doesn't exist
+        const { data: newTheme } = await supabase
+          .from('theme_settings')
+          .insert([DEFAULT_THEME])
+          .select()
+          .single();
+
+        setTheme(newTheme || DEFAULT_THEME);
+      }
     } catch (err) {
       console.error('Error loading theme:', err);
       setTheme(DEFAULT_THEME);

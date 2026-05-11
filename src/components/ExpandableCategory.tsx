@@ -78,7 +78,7 @@ export default function ExpandableCategory({
               {projects.map((project, index) => (
                 <motion.a
                   key={project.id}
-                  href={project.behanceUrl || '#'}
+                  href={project.behanceurl || '#'}
                   target="_blank"
                   rel="noopener noreferrer"
                   initial={{ opacity: 0, y: 20 }}
@@ -88,10 +88,10 @@ export default function ExpandableCategory({
                 >
                   <div className="border-b border-gray-100 pb-6 hover:border-[var(--accent)]/30 transition-colors">
                     <h3 className="text-xl font-medium mb-2 group-hover:text-[var(--accent)] transition-colors">
-                      {locale === 'es' ? project.title : project.titleEn}
+                      {locale === 'es' ? project.title : project.titleen}
                     </h3>
                     <p className="text-gray-600 text-sm font-mono mb-3">
-                      {locale === 'es' ? project.description : project.descriptionEn}
+                      {locale === 'es' ? project.description : project.descriptionen}
                     </p>
                     <div className="flex items-center justify-between">
                       <span className="text-xs text-gray-400 font-mono">{project.year}</span>

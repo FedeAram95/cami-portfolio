@@ -71,10 +71,10 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
       const { data: profileData, error: profileError } = await supabase
         .from('profile')
         .select('*')
-        .single();
+        .limit(1);
 
-      if (profileError && profileError.code !== 'PGRST116') throw profileError;
-      setProfile(profileData || null);
+      if (profileError) throw profileError;
+      setProfile(profileData && profileData.length > 0 ? profileData[0] : null);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error loading data');
     } finally {

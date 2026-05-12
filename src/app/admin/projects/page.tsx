@@ -1,21 +1,24 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import AdminNav from '@/components/admin/AdminNav';
 import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
 import { useData, Project } from '@/context/DataContext';
 import { categories } from '@/lib/data';
+import { supabase } from '@/lib/supabase';
 
-async function fetchBehanceImage(behanceUrl: string): Promise<string | null> {
-  try {
-    const res = await fetch(`/api/behance-image?url=${encodeURIComponent(behanceUrl)}`);
-    if (!res.ok) return null;
-    const data = await res.json();
-    return data.image ?? null;
-  } catch {
-    return null;
-  }
+async function uploadImageToStorage(file: File): Promise<string> {
+  const ext = file.name.split('.').pop() ?? 'jpg';
+  const filename = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+  const { data, error } = await supabase.storage
+    .from('project-images')
+    .upload(filename, file, { upsert: true, contentType: file.type });
+  if (error) throw new Error(error.message);
+  const { data: { publicUrl } } = supabase.storage
+    .from('project-images')
+    .getPublicUrl(data.path);
+  return publicUrl;
 }
 
 export default function AdminProjectsPage() {
@@ -33,7 +36,8 @@ export default function AdminProjectsPage() {
     year: new Date().getFullYear().toString(),
   });
   const [error, setError] = useState('');
-  const [fetchingImage, setFetchingImage] = useState(false);
+  const [uploadingImage, setUploadingImage] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -302,20 +306,71 @@ export default function AdminProjectsPage() {
                         />
                       </div>
 
-                      {/* Image URL */}
+                      {/* Image Upload */}
                       <div>
                         <label className="block text-sm font-mono uppercase mb-2">
-                          URL Imagen
+                          Imagen del Proyecto
                         </label>
+
+                        {/* Preview */}
+                        {formData.image && (
+                          <div className="mb-3 relative w-full aspect-video bg-gray-100 overflow-hidden">
+                            <img
+                              src={formData.image}
+                              alt="preview"
+                              className="w-full h-full object-cover"
+                            />
+                            <button
+                              type="button"
+                              onClick={() => setFormData({ ...formData, image: '' })}
+                              className="absolute top-2 right-2 bg-black/60 text-white font-mono text-[10px] px-2 py-1 hover:bg-black/80"
+                            >
+                              ✕ Quitar
+                            </button>
+                          </div>
+                        )}
+
+                        {/* Upload button */}
                         <input
-                          type="url"
-                          value={formData.image || ''}
-                          onChange={(e) =>
-                            setFormData({ ...formData, image: e.target.value })
-                          }
-                          placeholder="https://..."
-                          className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"
+                          ref={fileInputRef}
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const file = e.target.files?.[0];
+                            if (!file) return;
+                            setUploadingImage(true);
+                            setError('');
+                            try {
+                              const url = await uploadImageToStorage(file);
+                              setFormData((prev) => ({ ...prev, image: url }));
+                            } catch (err) {
+                              setError(err instanceof Error ? err.message : 'Error al subir imagen');
+                            } finally {
+                              setUploadingImage(false);
+                              if (fileInputRef.current) fileInputRef.current.value = '';
+                            }
+                          }}
                         />
+                        <button
+                          type="button"
+                          disabled={uploadingImage}
+                          onClick={() => fileInputRef.current?.click()}
+                          className="w-full py-3 border-2 border-dashed border-gray-300 font-mono text-sm text-gray-500 hover:border-[var(--accent)] hover:text-[var(--accent)] disabled:opacity-50 transition-colors"
+                        >
+                          {uploadingImage ? 'Subiendo...' : '↑ Subir imagen desde la computadora'}
+                        </button>
+
+                        {/* Or paste URL */}
+                        <div className="mt-2">
+                          <input
+                            type="url"
+                            value={formData.image || ''}
+                            onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                            placeholder="O pegar URL de imagen directamente..."
+                            className="w-full px-4 py-2 border border-gray-200 text-sm focus:outline-none focus:border-[var(--accent)] text-gray-600"
+                          />
+                        </div>
                       </div>
 
                       {/* Behance URL */}
@@ -323,38 +378,17 @@ export default function AdminProjectsPage() {
                         <label className="block text-sm font-mono uppercase mb-2">
                           URL Behance
                         </label>
-                        <div className="flex gap-2">
-                          <input
-                            type="url"
-                            value={formData.behanceurl || ''}
-                            onChange={(e) =>
-                              setFormData({ ...formData, behanceurl: e.target.value })
-                            }
-                            placeholder="https://behance.net/..."
-                            className="flex-1 px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"
-                          />
-                          <button
-                            type="button"
-                            disabled={!formData.behanceurl || fetchingImage}
-                            onClick={async () => {
-                              if (!formData.behanceurl) return;
-                              setFetchingImage(true);
-                              setError('');
-                              const img = await fetchBehanceImage(formData.behanceurl);
-                              setFetchingImage(false);
-                              if (img) {
-                                setFormData((prev) => ({ ...prev, image: img }));
-                              } else {
-                                setError('No se pudo obtener imagen de Behance');
-                              }
-                            }}
-                            className="px-4 py-2 bg-gray-800 text-white font-mono text-xs uppercase whitespace-nowrap disabled:opacity-40 hover:bg-gray-700 transition-colors"
-                          >
-                            {fetchingImage ? '...' : '↓ Imagen'}
-                          </button>
-                        </div>
+                        <input
+                          type="url"
+                          value={formData.behanceurl || ''}
+                          onChange={(e) =>
+                            setFormData({ ...formData, behanceurl: e.target.value })
+                          }
+                          placeholder="https://behance.net/gallery/..."
+                          className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"
+                        />
                         <p className="mt-1 text-xs text-gray-400 font-mono">
-                          Pega la URL de Behance y presiona ↓ Imagen para auto-completar
+                          Link al proyecto en Behance (abre al hacer clic en el portafolio)
                         </p>
                       </div>
 

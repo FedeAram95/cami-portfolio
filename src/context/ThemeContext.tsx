@@ -5,13 +5,13 @@ import { supabase } from '@/lib/supabase';
 
 export interface ThemeSettings {
   id: string;
-  primaryColor: string;
-  secondaryColor: string;
-  backgroundColor: string;
-  textColor: string;
-  sansFont: string;
-  serifFont: string;
-  monoFont: string;
+  primarycolor: string;
+  secondarycolor: string;
+  backgroundcolor: string;
+  textcolor: string;
+  sansfont: string;
+  seriffont: string;
+  monofont: string;
 }
 
 interface ThemeContextType {
@@ -23,13 +23,13 @@ interface ThemeContextType {
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const DEFAULT_THEME_DATA = {
-  primaryColor: '#d946a8',
-  secondaryColor: '#a21caf',
-  backgroundColor: '#ffffff',
-  textColor: '#171717',
-  sansFont: 'Geist',
-  serifFont: 'Geist',
-  monoFont: 'Geist Mono',
+  primarycolor: '#d946a8',
+  secondarycolor: '#a21caf',
+  backgroundcolor: '#ffffff',
+  textcolor: '#171717',
+  sansfont: 'Geist',
+  seriffont: 'Geist',
+  monofont: 'Geist Mono',
 };
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
@@ -42,35 +42,25 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   useEffect(() => {
-    if (theme) {
-      applyTheme(theme);
-    }
+    if (theme) applyTheme(theme);
   }, [theme]);
 
   async function loadTheme() {
     try {
       setLoading(true);
-      const { data, error } = await supabase
-        .from('theme_settings')
-        .select('*')
-        .limit(1);
-
+      const { data, error } = await supabase.from('theme_settings').select('*').limit(1);
       if (error) throw error;
 
       if (data && data.length > 0) {
         setTheme(data[0]);
       } else {
-        // Create default theme if it doesn't exist
         const { data: newTheme, error: insertError } = await supabase
           .from('theme_settings')
           .insert([DEFAULT_THEME_DATA])
           .select()
           .single();
-
         if (insertError) throw insertError;
-        if (newTheme) {
-          setTheme(newTheme);
-        }
+        if (newTheme) setTheme(newTheme);
       }
     } catch (err) {
       console.error('Error loading theme:', err);
@@ -86,20 +76,17 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         setTheme((payload.new as ThemeSettings) || null);
       })
       .subscribe();
-
-    return () => {
-      subscription.unsubscribe();
-    };
+    return () => { subscription.unsubscribe(); };
   }
 
-  function applyTheme(themeData: ThemeSettings) {
+  function applyTheme(t: ThemeSettings) {
     const root = document.documentElement;
-    root.style.setProperty('--accent', themeData.primaryColor);
-    root.style.setProperty('--accent-dark', themeData.secondaryColor);
-    root.style.setProperty('--background', themeData.backgroundColor);
-    root.style.setProperty('--foreground', themeData.textColor);
-    root.style.setProperty('--font-geist-sans', themeData.sansFont);
-    root.style.setProperty('--font-geist-mono', themeData.monoFont);
+    root.style.setProperty('--accent', t.primarycolor);
+    root.style.setProperty('--accent-dark', t.secondarycolor);
+    root.style.setProperty('--background', t.backgroundcolor);
+    root.style.setProperty('--foreground', t.textcolor);
+    root.style.setProperty('--font-geist-sans', t.sansfont);
+    root.style.setProperty('--font-geist-mono', t.monofont);
   }
 
   async function updateTheme(data: Partial<ThemeSettings>) {
@@ -130,8 +117,6 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
 
 export function useTheme() {
   const context = useContext(ThemeContext);
-  if (context === undefined) {
-    throw new Error('useTheme must be used within ThemeProvider');
-  }
+  if (context === undefined) throw new Error('useTheme must be used within ThemeProvider');
   return context;
 }

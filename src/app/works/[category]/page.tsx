@@ -21,134 +21,124 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
     return (
       <>
         <Navbar locale={locale} onLocaleChange={setLocale} />
-        <main className="min-h-screen bg-[#f0eeeb] flex items-center justify-center">
-          <p className="text-gray-400 font-mono">Cargando...</p>
+        <main className="min-h-screen bg-[#edeae7] flex items-center justify-center">
+          <p className="font-mono text-xs tracking-widest text-gray-400">CARGANDO...</p>
         </main>
       </>
     );
   }
 
-  if (!cat) {
-    return (
-      <>
-        <Navbar locale={locale} onLocaleChange={setLocale} />
-        <main className="min-h-screen bg-[#f0eeeb] flex items-center justify-center">
-          <p className="text-gray-400 font-mono">Categoría no encontrada</p>
-        </main>
-      </>
-    );
-  }
+  if (!cat) return null;
+
+  const displayName = locale === 'es' ? cat.name : cat.nameEn;
 
   return (
     <>
       <Navbar locale={locale} onLocaleChange={setLocale} />
 
-      <main className="min-h-screen bg-[#f0eeeb]">
-        {/* Header */}
-        <div className="pt-32 pb-8 px-8 lg:px-16">
-          <div className="flex items-start justify-between">
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5 }}
+      <main className="min-h-screen bg-white">
+        {/* Top white area */}
+        <div className="h-16" />
+
+        {/* Folder content area */}
+        <div className="bg-[#edeae7] min-h-screen relative">
+          {/* Folder tab shape */}
+          <div
+            className="bg-[#edeae7] absolute top-0 left-0 right-0 h-full"
+            style={{ clipPath: 'polygon(0 2%, 22% 2%, 22% 0, 100% 0, 100% 100%, 0 100%)' }}
+          />
+
+          <div className="relative z-10 px-8 lg:px-16 pt-10 pb-20">
+            {/* Back link */}
+            <Link
+              href="/works"
+              className="inline-flex items-center gap-2 font-mono text-[11px] tracking-[0.25em] uppercase text-gray-500 hover:text-gray-900 transition-colors mb-10"
             >
-              <p className="font-mono text-sm text-gray-500 mb-2">{cat.number}</p>
-              <h1 className="text-7xl lg:text-9xl font-serif lowercase tracking-tight">
-                {locale === 'es' ? cat.name : cat.nameEn}
+              ← {locale === 'es' ? 'Ver todos' : 'See all works'}
+            </Link>
+
+            {/* Category header */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.4 }}
+              className="mb-12"
+            >
+              <p className="font-mono text-[11px] tracking-[0.25em] text-gray-500 mb-1">{cat.number}</p>
+              <h1 className="text-7xl lg:text-9xl font-serif lowercase leading-none">
+                {displayName}
               </h1>
             </motion.div>
 
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3 }}
-              className="pt-4"
-            >
-              <Link
-                href="/works"
-                className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500 hover:text-gray-900 transition-colors flex items-center gap-2"
-              >
-                ← {locale === 'es' ? 'Volver' : 'Back'}
-              </Link>
-            </motion.div>
-          </div>
-        </div>
+            {/* Projects + Preview layout */}
+            <div className="flex gap-12 items-start">
+              {/* Left: Project list */}
+              <div className="flex-1">
+                {/* Table header */}
+                <div className="flex justify-between pb-3 border-b border-gray-400 mb-1">
+                  <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-gray-500">
+                    {locale === 'es' ? 'Título del proyecto' : 'Project title'}
+                  </span>
+                  <span className="font-mono text-[10px] tracking-[0.25em] uppercase text-gray-500 pr-2">
+                    {locale === 'es' ? 'Año' : 'Year'}
+                  </span>
+                </div>
 
-        {/* Projects Table */}
-        <div className="px-8 lg:px-16 pb-20">
-          <div className="flex gap-8">
-            {/* Left: Project list */}
-            <div className="flex-1">
-              {/* Table header */}
-              <div className="flex justify-between py-3 border-b border-gray-400 mb-2">
-                <span className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500">
-                  {locale === 'es' ? 'Título del proyecto' : 'Project title'}
-                </span>
-                <span className="font-mono text-xs tracking-[0.2em] uppercase text-gray-500">
-                  {locale === 'es' ? 'Año' : 'Year'}
-                </span>
+                {catProjects.length === 0 ? (
+                  <p className="font-mono text-xs text-gray-400 py-10">
+                    {locale === 'es' ? 'Sin proyectos todavía' : 'No projects yet'}
+                  </p>
+                ) : (
+                  catProjects.map((project, index) => (
+                    <motion.a
+                      key={project.id}
+                      href={project.behanceurl || '#'}
+                      target={project.behanceurl ? '_blank' : '_self'}
+                      rel="noopener noreferrer"
+                      initial={{ opacity: 0, y: 8 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: 0.1 + index * 0.05 }}
+                      onMouseEnter={() => setHoveredProject(project)}
+                      onMouseLeave={() => setHoveredProject(null)}
+                      className="flex justify-between items-center py-5 border-b border-gray-300/60 group cursor-pointer"
+                    >
+                      <span className="text-2xl lg:text-3xl font-serif group-hover:translate-x-2 transition-transform duration-200">
+                        {locale === 'es' ? project.title : project.titleen}
+                      </span>
+                      <span className="font-mono text-xs text-gray-400">{project.year}</span>
+                    </motion.a>
+                  ))
+                )}
               </div>
 
-              {catProjects.length === 0 ? (
-                <p className="text-gray-400 font-mono text-sm py-8">
-                  {locale === 'es' ? 'No hay proyectos todavía' : 'No projects yet'}
-                </p>
-              ) : (
-                catProjects.map((project, index) => (
-                  <motion.a
-                    key={project.id}
-                    href={project.behanceurl || '#'}
-                    target={project.behanceurl ? '_blank' : '_self'}
-                    rel="noopener noreferrer"
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: index * 0.06 }}
-                    onMouseEnter={() => setHoveredProject(project)}
-                    onMouseLeave={() => setHoveredProject(null)}
-                    className="flex justify-between items-center py-5 border-b border-gray-300 group cursor-pointer hover:border-gray-600 transition-colors"
-                  >
-                    <span className="text-2xl lg:text-3xl font-serif group-hover:text-[var(--accent)] transition-colors">
-                      {locale === 'es' ? project.title : project.titleen}
-                    </span>
-                    <span className="font-mono text-sm text-gray-400 group-hover:text-gray-600 transition-colors">
-                      {project.year}
-                    </span>
-                  </motion.a>
-                ))
-              )}
-            </div>
-
-            {/* Right: Preview image */}
-            <div className="hidden lg:block w-96 sticky top-32 self-start h-72">
-              <AnimatePresence mode="wait">
-                {hoveredProject && hoveredProject.image ? (
-                  <motion.div
-                    key={hoveredProject.id}
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
-                    className="w-full h-full"
-                  >
-                    <img
+              {/* Right: Preview */}
+              <div className="hidden lg:block w-[380px] sticky top-24">
+                <AnimatePresence mode="wait">
+                  {hoveredProject?.image ? (
+                    <motion.img
+                      key={hoveredProject.id}
                       src={hoveredProject.image}
                       alt={hoveredProject.title}
-                      className="w-full h-full object-cover"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      exit={{ opacity: 0 }}
+                      transition={{ duration: 0.2 }}
+                      className="w-full h-64 object-cover"
                     />
-                  </motion.div>
-                ) : (
-                  <motion.div
-                    key="empty"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="w-full h-full bg-gray-200 flex items-center justify-center"
-                  >
-                    <span className="font-mono text-xs text-gray-400 tracking-wider uppercase">
-                      Preview
-                    </span>
-                  </motion.div>
-                )}
-              </AnimatePresence>
+                  ) : (
+                    <motion.div
+                      key="placeholder"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="w-full h-64 bg-gray-200/60 flex items-end p-4"
+                    >
+                      <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-gray-400">
+                        Preview
+                      </span>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </div>
             </div>
           </div>
         </div>

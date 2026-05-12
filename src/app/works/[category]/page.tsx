@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, use } from 'react';
+import { useState, use, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import { Locale } from '@/i18n/translations';
@@ -12,10 +12,39 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
   const { category } = use(params);
   const [locale, setLocale] = useState<Locale>('es');
   const [hoveredProject, setHoveredProject] = useState<Project | null>(null);
+  const [imageCache, setImageCache] = useState<Record<string, string>>({});
+  const fetchedRef = useRef<Set<string>>(new Set());
   const { projects, loading } = useData();
 
   const cat = categories.find((c) => c.id === category);
   const catProjects = projects.filter((p) => p.category === category);
+
+  // Auto-fetch Behance images for projects without a stored image
+  useEffect(() => {
+    if (catProjects.length === 0) return;
+
+    const toFetch = catProjects.filter(
+      (p) => p.behanceurl && !p.image && !fetchedRef.current.has(p.id)
+    );
+
+    if (toFetch.length === 0) return;
+
+    toFetch.forEach((project) => {
+      fetchedRef.current.add(project.id);
+      fetch(`/api/behance-image?url=${encodeURIComponent(project.behanceurl!)}`)
+        .then((res) => res.ok ? res.json() : null)
+        .then((data) => {
+          if (data?.image) {
+            setImageCache((prev) => ({ ...prev, [project.id]: data.image }));
+          }
+        })
+        .catch(() => {/* silently ignore */});
+    });
+  }, [catProjects]);
+
+  function getImage(project: Project): string | undefined {
+    return project.image || imageCache[project.id];
+  }
 
   if (loading) {
     return (
@@ -114,10 +143,10 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
               {/* Right: Preview */}
               <div className="hidden lg:block w-[380px] sticky top-24">
                 <AnimatePresence mode="wait">
-                  {hoveredProject?.image ? (
+                  {hoveredProject && getImage(hoveredProject) ? (
                     <motion.img
                       key={hoveredProject.id}
-                      src={hoveredProject.image}
+                      src={getImage(hoveredProject)}
                       alt={hoveredProject.title}
                       initial={{ opacity: 0 }}
                       animate={{ opacity: 1 }}
@@ -125,6 +154,17 @@ export default function CategoryPage({ params }: { params: Promise<{ category: s
                       transition={{ duration: 0.2 }}
                       className="w-full h-64 object-cover"
                     />
+                  ) : hoveredProject && !getImage(hoveredProject) ? (
+                    <motion.div
+                      key={`loading-${hoveredProject.id}`}
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="w-full h-64 bg-gray-200/60 flex items-center justify-center"
+                    >
+                      <span className="font-mono text-[10px] tracking-[0.2em] uppercase text-gray-400 animate-pulse">
+                        Cargando...
+                      </span>
+                    </motion.div>
                   ) : (
                     <motion.div
                       key="placeholder"

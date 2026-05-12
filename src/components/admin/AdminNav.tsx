@@ -16,6 +16,9 @@ export default function AdminNav({ active }: AdminNavProps) {
   const navItems = [
     { id: 'dashboard', label: 'Dashboard', href: '/admin/dashboard' },
     { id: 'projects', label: 'Proyectos', href: '/admin/projects' },
+    { id: 'experiences', label: 'Experiencias', href: '/admin/experiences' },
+    { id: 'tools', label: 'Herramientas', href: '/admin/tools' },
+    { id: 'social', label: 'Links Sociales', href: '/admin/social' },
     { id: 'profile', label: 'Perfil', href: '/admin/profile' },
     { id: 'theme', label: 'Tema', href: '/admin/theme' },
   ];

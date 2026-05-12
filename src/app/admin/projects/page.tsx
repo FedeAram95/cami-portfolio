@@ -7,6 +7,17 @@ import ProtectedAdminRoute from '@/components/ProtectedAdminRoute';
 import { useData, Project } from '@/context/DataContext';
 import { categories } from '@/lib/data';
 
+async function fetchBehanceImage(behanceUrl: string): Promise<string | null> {
+  try {
+    const res = await fetch(`/api/behance-image?url=${encodeURIComponent(behanceUrl)}`);
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.image ?? null;
+  } catch {
+    return null;
+  }
+}
+
 export default function AdminProjectsPage() {
   const { projects, addProject, updateProject, deleteProject, loading } = useData();
   const [showForm, setShowForm] = useState(false);
@@ -22,6 +33,7 @@ export default function AdminProjectsPage() {
     year: new Date().getFullYear().toString(),
   });
   const [error, setError] = useState('');
+  const [fetchingImage, setFetchingImage] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -311,15 +323,39 @@ export default function AdminProjectsPage() {
                         <label className="block text-sm font-mono uppercase mb-2">
                           URL Behance
                         </label>
-                        <input
-                          type="url"
-                          value={formData.behanceurl || ''}
-                          onChange={(e) =>
-                            setFormData({ ...formData, behanceurl: e.target.value })
-                          }
-                          placeholder="https://behance.net/..."
-                          className="w-full px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"
-                        />
+                        <div className="flex gap-2">
+                          <input
+                            type="url"
+                            value={formData.behanceurl || ''}
+                            onChange={(e) =>
+                              setFormData({ ...formData, behanceurl: e.target.value })
+                            }
+                            placeholder="https://behance.net/..."
+                            className="flex-1 px-4 py-2 border border-gray-300 focus:outline-none focus:border-[var(--accent)]"
+                          />
+                          <button
+                            type="button"
+                            disabled={!formData.behanceurl || fetchingImage}
+                            onClick={async () => {
+                              if (!formData.behanceurl) return;
+                              setFetchingImage(true);
+                              setError('');
+                              const img = await fetchBehanceImage(formData.behanceurl);
+                              setFetchingImage(false);
+                              if (img) {
+                                setFormData((prev) => ({ ...prev, image: img }));
+                              } else {
+                                setError('No se pudo obtener imagen de Behance');
+                              }
+                            }}
+                            className="px-4 py-2 bg-gray-800 text-white font-mono text-xs uppercase whitespace-nowrap disabled:opacity-40 hover:bg-gray-700 transition-colors"
+                          >
+                            {fetchingImage ? '...' : '↓ Imagen'}
+                          </button>
+                        </div>
+                        <p className="mt-1 text-xs text-gray-400 font-mono">
+                          Pega la URL de Behance y presiona ↓ Imagen para auto-completar
+                        </p>
                       </div>
 
                       {/* Year */}
